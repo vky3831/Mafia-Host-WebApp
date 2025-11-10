@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mafia Host - Local</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="topbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Mafia Host</a>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-secondary" id="helpBtn">Help</button>
+      <div class="form-check form-switch ms-2">
+        <input class="form-check-input" type="checkbox" id="themeToggle">
+        <label class="form-check-label" for="themeToggle">Dark</label>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4">
+  <div id="homeView" class="text-center">
+    <div class="mb-4">
+      <button class="btn btn-lg btn-primary me-3" id="homeNewBtn">New Game</button>
+      <button class="btn btn-lg btn-outline-primary" id="homeContinueBtn">Continue Game</button>
+    </div>
+    <div id="continueMsg" class="text-muted"></div>
+  </div>
+
+  <!-- new game form -->
+  <div id="newGameView" class="d-none">
+    <form id="newGameForm" class="card p-3">
+      <div class="mb-3">
+        <label class="form-label">Passkey for Dashboard</label>
+        <input type="password" class="form-control" id="passkey" placeholder="Enter passkey">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Number of Players</label>
+        <input type="number" id="numPlayers" class="form-control" min="1" max="50" value="5">
+      </div>
+
+      <div class="mb-2"><strong>Character choices</strong> <small class="text-muted">(tick to enable)</small></div>
+      <div id="rolesList" class="row g-2"></div>
+
+      <div class="mt-3 text-end">
+        <button class="btn btn-secondary" type="button" id="backToHomeFromNew">Back</button>
+        <button class="btn btn-danger" type="button" id="flushBtn">Flush Existing</button>
+        <button class="btn btn-primary" type="submit">Next</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- player assignment view -->
+  <div id="assignView" class="d-none card p-3">
+    <h5>Pass mobile to player <span id="playerCounter"></span> / <span id="totalPlayers"></span></h5>
+    <div class="mb-3">
+      <label class="form-label">Enter player name</label>
+      <input type="text" id="playerName" class="form-control" placeholder="Player name">
+      <div id="nameFeedback" class="form-text text-danger d-none">Name already taken. Use another.</div>
+    </div>
+    <div class="mb-3">
+      <button class="btn btn-success" id="revealRoleBtn">OK - Reveal Role</button>
+    </div>
+    <div id="roleReveal" class="d-none card p-3 mb-3">
+      <h5 id="assignedRole"></h5>
+      <p id="assignedDesc"></p>
+      <button class="btn btn-primary" id="nextPlayerBtn">Next</button>
+    </div>
+  </div>
+
+  <!-- passkey entry before dashboard -->
+  <div id="enterPassView" class="d-none card p-3">
+    <h5>Enter dashboard passkey</h5>
+    <div class="mb-3">
+      <input type="password" id="dashPass" class="form-control" placeholder="Passkey">
+      <div id="passAlert" class="form-text text-danger d-none">Wrong passkey</div>
+    </div>
+    <div class="mb-2">
+      <button class="btn btn-primary" id="openDashBtn">Open Dashboard</button>
+      <button class="btn btn-secondary d-none" id="revealPassBtn">Reveal Passkey</button>
+    </div>
+  </div>
+
+  <!-- dashboard -->
+  <div id="dashboardView" class="d-none card p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Dashboard</h4>
+      <div>
+        <button class="btn btn-warning" id="nextRoundBtn">Next Round</button>
+        <button class="btn btn-secondary" id="saveGameBtn">Save</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered" id="playersTable">
+        <thead class="table-light">
+          <tr>
+            <th>Votes</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Dead/Alive</th>
+            <th>On Target</th>
+            <th>Saved</th>
+            <th id="bombHead" class="d-none">Bomb Planted</th>
+            <th id="gamblerHead" class="d-none">Gambled</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- help modal -->
+<div class="modal" tabindex="-1" id="helpModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Roles & Descriptions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="helpBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
