@@ -350,9 +350,11 @@
 
       // listeners with immediate persist
       votesTd.querySelector('.vote-inc').addEventListener('click', ()=>{
+        if(!p.alive){ alert('Dead cannot be voted'); return; }
         p.votes++; votesTd.querySelector('.vote-count').innerText = p.votes; persist();
       });
       votesTd.querySelector('.vote-dec').addEventListener('click', ()=>{
+        if(!p.alive){ alert('Dead cannot be voted'); return; }
         p.votes--; votesTd.querySelector('.vote-count').innerText = p.votes; persist();
       });
       aliveTd.querySelector('.alive-toggle').addEventListener('change', (e)=>{
