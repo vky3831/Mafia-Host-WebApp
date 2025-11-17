@@ -1,10 +1,11 @@
 :root{
-  --alive:#e6ffea;
-  --dead:#ffd6d6;
-  --ontarget:#fff7cc;
-  --saved:#e6f0ff;
-  --bomb:#e9e9e9;
-  --gambled:#ffe6cc;
+  --alive:#8effa0;
+  --dead:#f76060;
+  --ontarget:#fbe776;
+  --saved:#7eb2ff;
+  --bomb:#878585;
+  --gambled:#fea2f0;
+  --jailed:#f4946b;
 }
 body.dark {
   background:#111;

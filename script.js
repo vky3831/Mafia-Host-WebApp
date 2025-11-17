@@ -1,4 +1,4 @@
-// Mafia Host - client-only app using localStorage (v2)
+// Mafia Host - client-only app using localStorage (v2) — updated with Jailer support
 (() => {
   const roleDefs = {
     "Mafia":"A secret killer. Works with other mafia to eliminate villagers.",
@@ -7,7 +7,8 @@
     "Bomber":"Can plant a bomb on someone.",
     "Jester":"Wins if voted out.",
     "Sheriff":"Can investigate one player at night.",
-    "Doctor":"Can save someone at night."
+    "Doctor":"Can save someone at night.",
+    "Jailer":"Can jail a player, preventing their action that round."
   };
 
   // DOM refs
@@ -37,6 +38,7 @@
   const dashboardView = document.getElementById('dashboardView');
   const playersTableBody = document.querySelector('#playersTable tbody');
   const bombHead = document.getElementById('bombHead'), gamblerHead=document.getElementById('gamblerHead');
+  const jailerHead = document.getElementById('jailerHead');
   const helpBtn = document.getElementById('helpBtn');
   const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
   const helpBody = document.getElementById('helpBody');
@@ -255,7 +257,8 @@
       onTarget:false,
       saved:false,
       bomb:false,
-      gambled:false
+      gambled:false,
+      jailed:false
     });
     persist();
   });
@@ -317,8 +320,10 @@
     playersTableBody.innerHTML='';
     const hasBomber = !!(game.roles && game.roles['Bomber']);
     const hasGambler = !!(game.roles && game.roles['Gambler']);
+    const hasJailer = !!(game.roles && game.roles['Jailer']);
     if(hasBomber) bombHead.classList.remove('d-none'); else bombHead.classList.add('d-none');
     if(hasGambler) gamblerHead.classList.remove('d-none'); else gamblerHead.classList.add('d-none');
+    if(hasJailer) jailerHead.classList.remove('d-none'); else jailerHead.classList.add('d-none');
 
     game.players.forEach((p, idx)=>{
       const tr = document.createElement('tr');
@@ -340,11 +345,13 @@
       savedTd.innerHTML = `<div class="form-check form-switch"><input class="form-check-input saved-toggle" type="checkbox" ${p.saved ? 'checked':''}></div>`;
       const bombTd = document.createElement('td'); bombTd.classList.add('bomb-col'); bombTd.innerHTML = `<div class="form-check form-switch"><input class="form-check-input bomb-toggle" type="checkbox" ${p.bomb ? 'checked':''}></div>`;
       const gambTd = document.createElement('td'); gambTd.classList.add('gamb-col'); gambTd.innerHTML = `<div class="form-check form-switch"><input class="form-check-input gamb-toggle" type="checkbox" ${p.gambled ? 'checked':''}></div>`;
+      const jailTd = document.createElement('td'); jailTd.classList.add('jail-col'); jailTd.innerHTML = `<div class="form-check form-switch"><input class="form-check-input jail-toggle" type="checkbox" ${p.jailed ? 'checked':''}></div>`;
 
       tr.appendChild(votesTd); tr.appendChild(nameTd); tr.appendChild(roleTd); tr.appendChild(aliveTd);
       tr.appendChild(onTargetTd); tr.appendChild(savedTd);
       if(hasBomber) tr.appendChild(bombTd);
       if(hasGambler) tr.appendChild(gambTd);
+      if(hasJailer) tr.appendChild(jailTd);
 
       applyRowColor(tr, p);
 
@@ -360,7 +367,7 @@
       aliveTd.querySelector('.alive-toggle').addEventListener('change', (e)=>{
         p.alive = e.target.checked;
         if(!p.alive){
-          p.onTarget=false; p.saved=false; p.bomb=false; p.gambled=false;
+          p.onTarget=false; p.saved=false; p.bomb=false; p.gambled=false; p.jailed=false;
         }
         applyRowColor(tr,p);
         renderTable();
@@ -386,6 +393,12 @@
           p.gambled = e.target.checked; applyRowColor(tr,p); persist();
         });
       }
+      if(hasJailer){
+        jailTd.querySelector('.jail-toggle').addEventListener('change', (e)=>{
+          if(!p.alive && e.target.checked){ alert('Dead cannot be jailed'); e.target.checked=false; return; }
+          p.jailed = e.target.checked; applyRowColor(tr,p); persist();
+        });
+      }
 
       playersTableBody.appendChild(tr);
     });
@@ -398,6 +411,7 @@
     if(p.saved) colors.push('var(--saved)');
     if(p.bomb) colors.push('var(--bomb)');
     if(p.gambled) colors.push('var(--gambled)');
+    if(p.jailed) colors.push('var(--jailed)');
     if(colors.length===0) tr.style.background = 'var(--alive)';
     else if(colors.length===1) tr.style.background = colors[0];
     else {
@@ -438,6 +452,7 @@
       p.saved = false;
       p.bomb = false;
       p.gambled = false;
+      p.jailed = false;
     });
     persist();
     renderTable();
